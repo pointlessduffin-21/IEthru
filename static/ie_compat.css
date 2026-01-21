@@ -1,0 +1,79 @@
+/* IE5/6 Compatible Styles */
+
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Tahoma, Arial, Helvetica, sans-serif;
+  font-size: 12px;
+  background-color: #c0c0c0;
+  color: #000000;
+}
+
+/* Classic Windows look */
+.win-panel {
+  background-color: #d4d0c8;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+}
+
+.win-panel-inset {
+  background-color: #ffffff;
+  border: 2px solid;
+  border-color: #808080 #ffffff #ffffff #808080;
+}
+
+/* Buttons */
+.win-btn {
+  background-color: #d4d0c8;
+  border: 2px solid;
+  border-color: #ffffff #808080 #808080 #ffffff;
+  padding: 2px 8px;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.win-btn:active {
+  border-color: #808080 #ffffff #ffffff #808080;
+}
+
+/* Input fields */
+.win-input {
+  border: 2px solid;
+  border-color: #808080 #ffffff #ffffff #808080;
+  padding: 2px 4px;
+  font-size: 11px;
+  background-color: #ffffff;
+}
+
+/* Links */
+a {
+  color: #0000ff;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #800080;
+}
+
+a:hover {
+  color: #ff0000;
+}
+
+/* Toolbar */
+.toolbar {
+  background-color: #d4d0c8;
+  padding: 2px;
+  border-bottom: 1px solid #808080;
+}
+
+/* Status bar */
+.statusbar {
+  background-color: #d4d0c8;
+  border-top: 1px solid #ffffff;
+  padding: 2px 4px;
+  font-size: 10px;
+}
