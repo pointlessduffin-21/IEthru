@@ -1,56 +1,73 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-<head>
+  <head>
     <title>{{ page_info.title or 'IEthru' }} - IEthru</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-</head>
-<body bgcolor="#C0C0C0" leftmargin="0" topmargin="0" marginwidth="0" marginheight="0">
-
-<!-- 
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  </head>
+  <body
+    bgcolor="#C0C0C0"
+    leftmargin="0"
+    topmargin="0"
+    marginwidth="0"
+    marginheight="0"
+  >
+    <!-- 
 DEBUG: Session ID = {{ session_id }}
 This session_id must be passed to ALL links to maintain the same browser session.
 -->
 
-<table border="0" cellpadding="0" cellspacing="0" width="100%">
-
-<!-- TOOLBAR -->
-<tr bgcolor="#D4D0C8">
-    <td>
-        <table border="0" cellpadding="3" cellspacing="0" width="100%">
-        <tr>
-            <!-- Navigation -->
-            <td nowrap>
+    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+      <!-- TOOLBAR -->
+      <tr bgcolor="#D4D0C8">
+        <td>
+          <table border="0" cellpadding="3" cellspacing="0" width="100%">
+            <tr>
+              <!-- Navigation -->
+              <td nowrap>
                 <a href="/action/{{ session_id }}/get?action=back">&lt;Back</a>
-                <a href="/action/{{ session_id }}/get?action=forward">Fwd&gt;</a>
+                <a href="/action/{{ session_id }}/get?action=forward"
+                  >Fwd&gt;</a
+                >
                 <a href="/action/{{ session_id }}/get?action=reload">Reload</a>
-            </td>
-            <!-- URL bar -->
-            <td width="100%">
+              </td>
+              <!-- URL bar -->
+              <td width="100%">
                 <form action="/browse" method="GET">
-                    <input type="hidden" name="session_id" value="{{ session_id }}">
-                    <input type="text" name="url" value="{{ page_info.url }}" size="50">
-                    <input type="submit" value="Go">
+                  <input
+                    type="hidden"
+                    name="session_id"
+                    value="{{ session_id }}"
+                  />
+                  <input
+                    type="text"
+                    name="url"
+                    value="{{ page_info.url }}"
+                    size="50"
+                  />
+                  <input type="submit" value="Go" />
                 </form>
-            </td>
-            <!-- Session info -->
-            <td nowrap align="right">
+              </td>
+              <!-- Session info -->
+              <td nowrap align="right">
                 <font size="1">
-                    Session: {{ session_id }} |
-                    <a href="/">New</a> |
-                    <a href="/session/close/{{ session_id }}/get">Close</a>
+                  Session: {{ session_id }} |
+                  <a href="/">[Exit]</a> |
+                  <a href="/session/close/{{ session_id }}/get"
+                    ><b>[Close Session]</b></a
+                  >
                 </font>
-            </td>
-        </tr>
-        </table>
-    </td>
-</tr>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
 
-<!-- SCROLL CONTROLS - These MUST use the correct session_id -->
-<tr bgcolor="#EEEEEE">
-    <td>
-        <table border="0" cellpadding="2" cellspacing="0">
-        <tr>
-            <td nowrap>
+      <!-- SCROLL CONTROLS - These MUST use the correct session_id -->
+      <tr bgcolor="#EEEEEE">
+        <td>
+          <table border="0" cellpadding="2" cellspacing="0">
+            <tr>
+              <td nowrap>
                 <!-- CRITICAL: session_id in URL path ensures correct session is used -->
                 <a href="/scroll/{{ session_id }}?dy=-100">[Up]</a>
                 <a href="/scroll/{{ session_id }}?dy=100">[Down]</a>
@@ -58,67 +75,74 @@ This session_id must be passed to ALL links to maintain the same browser session
                 <a href="/scroll/{{ session_id }}?dy=400">[PgDn]</a>
                 &nbsp;|&nbsp;
                 <a href="/refresh/{{ session_id }}">[Refresh Frame]</a>
-            </td>
-            <td>
+              </td>
+              <td>
                 <form action="/type/{{ session_id }}" method="GET">
-                    Type: <input type="text" name="text" size="15">
-                    <input type="submit" value="Send">
+                  Type: <input type="text" name="text" size="15" />
+                  <input type="submit" value="Send" />
                 </form>
-            </td>
-            <td nowrap>
+              </td>
+              <td nowrap>
                 <a href="/key/{{ session_id }}?key=Enter">[Enter]</a>
                 <a href="/key/{{ session_id }}?key=Tab">[Tab]</a>
                 <a href="/key/{{ session_id }}?key=Escape">[Esc]</a>
                 <a href="/key/{{ session_id }}?key=Backspace">[Bksp]</a>
-            </td>
-        </tr>
-        </table>
-    </td>
-</tr>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
 
-{% if error %}
-<!-- ERROR -->
-<tr bgcolor="#FFCCCC">
-    <td><font color="#CC0000"><b>Error:</b> {{ error }}</font></td>
-</tr>
-{% endif %}
+      {% if error %}
+      <!-- ERROR -->
+      <tr bgcolor="#FFCCCC">
+        <td>
+          <font color="#CC0000"><b>Error:</b> {{ error }}</font>
+        </td>
+      </tr>
+      {% endif %}
 
-<!-- VIEWPORT -->
-<tr>
-    <td bgcolor="#000000" align="center">
-        <a href="/click/{{ session_id }}?x=0&y=0">
-        <img src="/frame/{{ session_id }}?t={{ timestamp }}" 
-             border="0" 
-             alt="Remote Browser"
-             id="viewport">
-        </a>
-    </td>
-</tr>
+      <!-- VIEWPORT -->
+      <tr>
+        <td bgcolor="#000000" align="center">
+          <a href="/click/{{ session_id }}?x=0&y=0">
+            <img
+              src="/frame/{{ session_id }}?t={{ timestamp }}"
+              border="0"
+              alt="Remote Browser"
+              id="viewport"
+            />
+          </a>
+        </td>
+      </tr>
+    </table>
 
-</table>
-
-<!-- Click handler for IE5/6 -->
-<script language="JavaScript">
-<!--
-var img = document.getElementById ? document.getElementById('viewport') : document.all['viewport'];
-if (img) {
-    img.onclick = function() {
-        var e = window.event;
-        var x = 0, y = 0;
-        if (e) {
+    <!-- Click handler for IE5/6 -->
+    <script language="JavaScript">
+      <!--
+      var img = document.getElementById
+        ? document.getElementById("viewport")
+        : document.all["viewport"];
+      if (img) {
+        img.onclick = function () {
+          var e = window.event;
+          var x = 0,
+            y = 0;
+          if (e) {
             x = e.offsetX || 0;
             y = e.offsetY || 0;
+          }
+          window.location.href = "/click/{{ session_id }}?x=" + x + "&y=" + y;
+          return false;
+        };
+        // Disable the parent link
+        if (img.parentNode && img.parentNode.tagName == "A") {
+          img.parentNode.onclick = function () {
+            return false;
+          };
         }
-        window.location.href = '/click/{{ session_id }}?x=' + x + '&y=' + y;
-        return false;
-    };
-    // Disable the parent link
-    if (img.parentNode && img.parentNode.tagName == 'A') {
-        img.parentNode.onclick = function() { return false; };
-    }
-}
-//-->
-</script>
-
-</body>
+      }
+      //-->
+    </script>
+  </body>
 </html>
