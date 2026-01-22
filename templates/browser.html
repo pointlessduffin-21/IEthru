@@ -97,26 +97,41 @@ This session_id must be passed to ALL links to maintain the same browser session
 
 </table>
 
-<!-- Click handler for IE5/6 -->
+<!-- Click handler for IE5/6 - Compatible with Cloudflare proxy -->
 <script language="JavaScript">
 <!--
-var img = document.getElementById ? document.getElementById('viewport') : document.all['viewport'];
-if (img) {
-    img.onclick = function() {
-        var e = window.event;
-        var x = 0, y = 0;
-        if (e) {
-            x = e.offsetX || 0;
-            y = e.offsetY || 0;
-        }
-        window.location.href = '/click/{{ session_id }}?x=' + x + '&y=' + y;
-        return false;
-    };
-    // Disable the parent link
-    if (img.parentNode && img.parentNode.tagName == 'A') {
-        img.parentNode.onclick = function() { return false; };
+// Suppress errors from any injected scripts (Cloudflare, etc.)
+window.onerror = function() { return true; };
+
+function handleClick() {
+    var e, x, y;
+    x = 0;
+    y = 0;
+    e = null;
+    if (typeof window.event != 'undefined') {
+        e = window.event;
+    }
+    if (e) {
+        if (typeof e.offsetX != 'undefined') { x = e.offsetX; }
+        if (typeof e.offsetY != 'undefined') { y = e.offsetY; }
+    }
+    window.location.href = '/click/{{ session_id }}?x=' + x + '&y=' + y;
+    return false;
+}
+
+function setupViewport() {
+    var img;
+    if (document.getElementById) {
+        img = document.getElementById('viewport');
+    } else if (document.all) {
+        img = document.all['viewport'];
+    }
+    if (img) {
+        img.onclick = handleClick;
     }
 }
+
+setupViewport();
 //-->
 </script>
 
