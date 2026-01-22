@@ -115,7 +115,30 @@
             </tr>
             <tr>
               <td bgcolor="#F5F5F5">
-                <form action="/browse" method="POST">
+                <script language="JavaScript">
+                <!--
+                function updateResolution(select) {
+                    if (select.value) {
+                        var parts = select.value.split(',');
+                        document.forms['custom_form'].viewport_width.value = parts[0];
+                        document.forms['custom_form'].viewport_height.value = parts[1];
+                    }
+                }
+                
+                function autoDetect() {
+                    var w = 800;
+                    var h = 600;
+                    if (window.screen) {
+                        w = window.screen.width;
+                        h = window.screen.height;
+                    }
+                    document.forms['custom_form'].viewport_width.value = w;
+                    document.forms['custom_form'].viewport_height.value = h;
+                    document.forms['custom_form'].resolution_preset.selectedIndex = 0; // Set to Custom
+                }
+                //-->
+                </script>
+                <form action="/browse" method="POST" name="custom_form">
                   <table border="0" cellpadding="5">
                     <tr>
                       <td><font color="#333333"><b>URL:</b></font></td>
@@ -124,17 +147,23 @@
                     <tr>
                       <td><font color="#333333"><b>Size:</b></font></td>
                       <td>
-                        <select name="viewport_width">
-                          <option value="640">640</option>
-                          <option value="800" selected>800</option>
-                          <option value="1024">1024</option>
+                        <select name="resolution_preset" onchange="updateResolution(this)">
+                          <option value="">Custom</option>
+                          <option value="640,480">640x480 (4:3)</option>
+                          <option value="800,600" selected>800x600 (4:3)</option>
+                          <option value="1024,768">1024x768 (4:3)</option>
+                          <option value="1280,720">1280x720 (16:9)</option>
+                          <option value="1280,800">1280x800 (16:10)</option>
+                          <option value="1366,768">1366x768 (16:9)</option>
+                          <option value="1440,900">1440x900 (16:10)</option>
+                          <option value="1600,900">1600x900 (16:9)</option>
+                          <option value="1920,1080">1920x1080 (16:9)</option>
+                          <option value="2560,1600">2560x1600 (16:10)</option>
                         </select>
-                        x
-                        <select name="viewport_height">
-                          <option value="480">480</option>
-                          <option value="600" selected>600</option>
-                          <option value="768">768</option>
-                        </select>
+                        <br>
+                        <input type="text" name="viewport_width" value="800" size="4"> x 
+                        <input type="text" name="viewport_height" value="600" size="4">
+                        <input type="button" value="Auto-Detect" onclick="autoDetect()">
                         &nbsp;
                         <input type="submit" value="Go!">
                       </td>
