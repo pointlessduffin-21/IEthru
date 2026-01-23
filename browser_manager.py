@@ -196,12 +196,18 @@ class BrowserManager:
                 
                 # Save file
                 filename = download.suggested_filename
-                path = os.path.join(download_dir, filename)
+                
+                # Generate unique filename for storage to avoid collisions
+                unique_id = uuid.uuid4().hex[:8]
+                stored_filename = f"{unique_id}_{filename}"
+                path = os.path.join(download_dir, stored_filename)
+                
                 download.save_as(path)
                 
                 print(f"Download completed: {path}")
                 download_info = {
                     'filename': filename,
+                    'stored_filename': stored_filename,
                     'path': path,
                     'url': download.url,
                     'time': time.time(),

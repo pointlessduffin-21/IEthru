@@ -50,7 +50,7 @@ def download_history(session_id):
             <tr>
                 <td>{dl['filename']}</td>
                 <td>{dl['readable_time']}</td>
-                <td><a href="/downloads/{session_id}/{dl['filename']}" target="_blank">Download</a></td>
+                <td><a href="/downloads/{session_id}/{dl['stored_filename']}" target="_blank">Download</a></td>
             </tr>
         """
         
@@ -64,19 +64,30 @@ def download_history(session_id):
     """
     return html
 
-@app.route('/downloads/<session_id>/<filename>')
-def download_file(session_id, filename):
+@app.route('/downloads/<session_id>/<stored_filename>')
+def download_file(session_id, stored_filename):
     """Serve a downloaded file."""
     # Security check: generic path traversal prevention
-    if '..' in session_id or '..' in filename:
+    if '..' in session_id or '..' in stored_filename:
         return "Invalid path", 400
         
+    session = browser_manager.get_session(session_id)
+    if not session:
+        return "Session not found", 404
+        
+    # Find the download entry to get original filename
+    download_entry = next((d for d in session.downloads if d['stored_filename'] == stored_filename), None)
+    
+    if not download_entry:
+        return "File entry not found", 404
+        
     import os
-    file_path = os.path.join('downloads', session_id, filename)
+    file_path = download_entry['path']
+    original_filename = download_entry['filename']
     
     if os.path.exists(file_path):
-        return send_file(file_path, as_attachment=True)
-    return "File not found", 404
+        return send_file(file_path, as_attachment=True, download_name=original_filename)
+    return "File on disk not found", 404
 
 
 @app.before_request
