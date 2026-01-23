@@ -31,26 +31,55 @@ def download_history(session_id):
         return "Session not found", 404
         
     # Render simple HTML list
+    # Render simple HTML list with auto-refresh
     html = """
     <html>
-    <head><title>Download History</title></head>
+    <head>
+        <title>Download History</title>
+        <meta http-equiv="refresh" content="5">
+    </head>
     <body bgcolor="#FFFFFF">
         <font face="Verdana, Arial" size="2">
         <h3>Download History</h3>
+        <p><a href="javascript:window.location.reload()">Refresh List</a></p>
         <table border="1" cellpadding="5" cellspacing="0" width="100%">
             <tr bgcolor="#E0E0E0">
                 <th>Filename</th>
+                <th>Status</th>
                 <th>Time</th>
                 <th>Action</th>
             </tr>
     """
     
     for dl in session.downloads:
+        status = dl.get('status', 'ready')
+        action = "&nbsp;"
+        status_color = "black"
+        
+        if status == 'ready':
+            action = f'<a href="/downloads/{session_id}/{dl["stored_filename"]}" target="_blank">Download</a>'
+            status_text = "Ready"
+            bg_color = "#FFFFFF"
+        elif status == 'downloading':
+            status_text = "Downloading..."
+            status_color = "blue"
+            bg_color = "#F0F8FF"
+            action = "Please wait..."
+        elif status == 'failed':
+            status_text = f"Failed: {dl.get('error', 'Unknown')}"
+            status_color = "red"
+            bg_color = "#FFF0F0"
+            action = "Error"
+        else:
+            status_text = status
+            bg_color = "#FFFFFF"
+
         html += f"""
-            <tr>
+            <tr bgcolor="{bg_color}">
                 <td>{dl['filename']}</td>
+                <td><font color="{status_color}">{status_text}</font></td>
                 <td>{dl['readable_time']}</td>
-                <td><a href="/downloads/{session_id}/{dl['stored_filename']}" target="_blank">Download</a></td>
+                <td>{action}</td>
             </tr>
         """
         

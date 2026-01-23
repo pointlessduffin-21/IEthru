@@ -83,6 +83,24 @@ This session_id must be passed to ALL links to maintain the same browser session
 </tr>
 {% endif %}
 
+{% if page_info.downloading_count > 0 %}
+<!-- DOWNLOADING NOTIFICATION -->
+<tr bgcolor="#E0F0FF">
+    <td align="center" style="border-bottom: 1px solid #0066CC;">
+        <table border="0" cellpadding="5" cellspacing="0" width="100%">
+            <tr>
+                <td align="center">
+                    <font face="Verdana, Arial" size="2" color="black">
+                        <b>Downloading {{ page_info.downloading_count }} file(s)...</b>
+                        <font size="1">(Check history for status)</font>
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+{% endif %}
+
 {% if page_info.downloads_count > 0 %}
 <!-- DOWNLOAD NOTIFICATION -->
 <tr bgcolor="#FFFFCC">

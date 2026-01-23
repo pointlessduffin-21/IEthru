@@ -30,6 +30,7 @@ class BrowserSession:
     fps: int = config.DEFAULT_FPS
     last_rtt_ms: float = 0.0
     downloads: list[dict] = field(default_factory=list)
+    downloading_count: int = 0
     
     def touch(self):
         """Update last activity timestamp."""
@@ -188,34 +189,63 @@ class BrowserManager:
         
         # Handle Downloads
         def handle_download(download):
+            import os
+            
+            # Generate ID and info immediately
+            unique_id = uuid.uuid4().hex[:8]
+            readable_time = datetime.now().strftime("%H:%M:%S")
+            filename = download.suggested_filename or "unknown_file"
+            stored_filename = f"{unique_id}_{filename}"
+            
+            # Initial record
+            download_info = {
+                'id': unique_id,
+                'filename': filename,
+                'stored_filename': stored_filename,
+                'status': 'downloading',
+                'path': "", # Not set yet
+                'url': download.url,
+                'time': time.time(),
+                'readable_time': readable_time
+            }
+            
+            # Determine path
+            download_dir = os.path.join('downloads', session_id)
             try:
-                import os
-                # Create session specific directory
-                download_dir = os.path.join('downloads', session_id)
                 os.makedirs(download_dir, exist_ok=True)
+                download_info['path'] = os.path.join(download_dir, stored_filename)
                 
-                # Save file
-                filename = download.suggested_filename
-                
-                # Generate unique filename for storage to avoid collisions
-                unique_id = uuid.uuid4().hex[:8]
-                stored_filename = f"{unique_id}_{filename}"
-                path = os.path.join(download_dir, stored_filename)
-                
-                download.save_as(path)
-                
-                print(f"Download completed: {path}")
-                download_info = {
-                    'filename': filename,
-                    'stored_filename': stored_filename,
-                    'path': path,
-                    'url': download.url,
-                    'time': time.time(),
-                    'readable_time': datetime.now().strftime("%H:%M:%S")
-                }
-                session.downloads.insert(0, download_info) # Prepend to show newest first
+                # Add to list and increment counter
+                session.downloads.insert(0, download_info)
+                session.downloading_count += 1
+                print(f"Download started: {filename} -> {stored_filename}")
+
+                try:
+                    # Blocking save
+                    download.save_as(download_info['path'])
+                    
+                    # Success
+                    download_info['status'] = 'ready'
+                    print(f"Download completed: {download_info['path']}")
+                    
+                except Exception as e:
+                    # Failure during save
+                    download_info['status'] = 'failed'
+                    download_info['error'] = str(e)
+                    print(f"Download failed during save: {e}")
+                    
             except Exception as e:
-                print(f"Download failed: {e}")
+                # Setup failure
+                print(f"Download setup failed: {e}")
+                # If we inserted it, mark failed
+                if download_info in session.downloads:
+                    download_info['status'] = 'failed'
+                    download_info['error'] = str(e)
+            
+            finally:
+                # Decrement downloading counter
+                if session.downloading_count > 0:
+                    session.downloading_count -= 1
 
         page.on("download", handle_download)
         
@@ -526,7 +556,9 @@ class BrowserManager:
                     'fps': s.fps,
                     'quality': s.quality,
                     'fps': s.fps,
-                    'downloads_count': len(s.downloads)
+                    'fps': s.fps,
+                    'downloads_count': len([d for d in s.downloads if d.get('status') == 'ready']),
+                    'downloading_count': s.downloading_count
                 }
             except Exception:
                 return None
