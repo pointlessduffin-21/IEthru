@@ -29,7 +29,7 @@ class BrowserSession:
     quality: int = config.DEFAULT_QUALITY
     fps: int = config.DEFAULT_FPS
     last_rtt_ms: float = 0.0
-    last_download: Optional[dict] = None
+    downloads: list[dict] = field(default_factory=list)
     
     def touch(self):
         """Update last activity timestamp."""
@@ -200,12 +200,14 @@ class BrowserManager:
                 download.save_as(path)
                 
                 print(f"Download completed: {path}")
-                session.last_download = {
+                download_info = {
                     'filename': filename,
                     'path': path,
                     'url': download.url,
-                    'time': time.time()
+                    'time': time.time(),
+                    'readable_time': datetime.now().strftime("%H:%M:%S")
                 }
+                session.downloads.insert(0, download_info) # Prepend to show newest first
             except Exception as e:
                 print(f"Download failed: {e}")
 
@@ -223,6 +225,18 @@ class BrowserManager:
                 session.context.close()
             except Exception as e:
                 print(f"Error closing session {session_id}: {e}")
+            
+            # Clean up downloads
+            import shutil
+            import os
+            download_dir = os.path.join('downloads', session_id)
+            if os.path.exists(download_dir):
+                try:
+                    shutil.rmtree(download_dir)
+                    print(f"Cleaned up downloads for session: {session_id}")
+                except Exception as e:
+                    print(f"Error cleaning up downloads for {session_id}: {e}")
+            
             print(f"Closed session: {session_id}")
             return True
         return False
@@ -504,7 +518,9 @@ class BrowserManager:
                     'viewport_height': s.viewport_height,
                     'quality': s.quality,
                     'fps': s.fps,
-                    'last_download': s.last_download
+                    'quality': s.quality,
+                    'fps': s.fps,
+                    'downloads_count': len(s.downloads)
                 }
             except Exception:
                 return None

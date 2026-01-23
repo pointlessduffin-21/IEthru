@@ -118,7 +118,13 @@
                 <script language="JavaScript">
                 <!--
                 function updateResolution(select) {
-                    if (select.value) {
+                    var custom = document.getElementById('custom_inputs');
+                    if (select.value == "") {
+                        if (custom.style.display == 'none') {
+                             custom.style.display = 'block';
+                        }
+                    } else {
+                        custom.style.display = 'none';
                         var parts = select.value.split(',');
                         document.forms['custom_form'].viewport_width.value = parts[0];
                         document.forms['custom_form'].viewport_height.value = parts[1];
@@ -135,6 +141,7 @@
                     document.forms['custom_form'].viewport_width.value = w;
                     document.forms['custom_form'].viewport_height.value = h;
                     document.forms['custom_form'].resolution_preset.selectedIndex = 0; // Set to Custom
+                    document.getElementById('custom_inputs').style.display = 'block';
                 }
                 //-->
                 </script>
@@ -161,9 +168,11 @@
                           <option value="2560,1600">2560x1600 (16:10)</option>
                         </select>
                         <br>
-                        <input type="text" name="viewport_width" value="800" size="4"> x 
-                        <input type="text" name="viewport_height" value="600" size="4">
-                        <input type="button" value="Auto-Detect" onclick="autoDetect()">
+                        <div id="custom_inputs" style="display:none; margin-top:5px;">
+                            <input type="text" name="viewport_width" value="800" size="4"> x 
+                            <input type="text" name="viewport_height" value="600" size="4">
+                            <input type="button" value="Auto-Detect" onclick="autoDetect()">
+                        </div>
                         &nbsp;
                         <input type="submit" value="Go!">
                       </td>

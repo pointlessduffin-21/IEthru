@@ -23,6 +23,47 @@ from browser_manager import browser_manager
 app = Flask(__name__)
 
 
+@app.route('/downloads/history/<session_id>')
+def download_history(session_id):
+    """Show download history for session."""
+    session = browser_manager.get_session(session_id)
+    if not session:
+        return "Session not found", 404
+        
+    # Render simple HTML list
+    html = """
+    <html>
+    <head><title>Download History</title></head>
+    <body bgcolor="#FFFFFF">
+        <font face="Verdana, Arial" size="2">
+        <h3>Download History</h3>
+        <table border="1" cellpadding="5" cellspacing="0" width="100%">
+            <tr bgcolor="#E0E0E0">
+                <th>Filename</th>
+                <th>Time</th>
+                <th>Action</th>
+            </tr>
+    """
+    
+    for dl in session.downloads:
+        html += f"""
+            <tr>
+                <td>{dl['filename']}</td>
+                <td>{dl['readable_time']}</td>
+                <td><a href="/downloads/{session_id}/{dl['filename']}" target="_blank">Download</a></td>
+            </tr>
+        """
+        
+    html += """
+        </table>
+        <br>
+        <a href="javascript:window.close()">Close Window</a>
+        </font>
+    </body>
+    </html>
+    """
+    return html
+
 @app.route('/downloads/<session_id>/<filename>')
 def download_file(session_id, filename):
     """Serve a downloaded file."""
