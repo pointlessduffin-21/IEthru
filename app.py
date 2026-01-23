@@ -13,13 +13,29 @@ from flask import (
     redirect, 
     url_for, 
     Response,
-    jsonify
+    jsonify,
+    send_file
 )
 
 import config
 from browser_manager import browser_manager
 
 app = Flask(__name__)
+
+
+@app.route('/downloads/<session_id>/<filename>')
+def download_file(session_id, filename):
+    """Serve a downloaded file."""
+    # Security check: generic path traversal prevention
+    if '..' in session_id or '..' in filename:
+        return "Invalid path", 400
+        
+    import os
+    file_path = os.path.join('downloads', session_id, filename)
+    
+    if os.path.exists(file_path):
+        return send_file(file_path, as_attachment=True)
+    return "File not found", 404
 
 
 @app.before_request

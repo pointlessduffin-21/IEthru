@@ -29,6 +29,7 @@ class BrowserSession:
     quality: int = config.DEFAULT_QUALITY
     fps: int = config.DEFAULT_FPS
     last_rtt_ms: float = 0.0
+    last_download: Optional[dict] = None
     
     def touch(self):
         """Update last activity timestamp."""
@@ -57,6 +58,10 @@ class BrowserManager:
         self._result_queues: dict[str, queue.Queue] = {}
         self._browser_thread: Optional[threading.Thread] = None
         self._running = False
+        
+        # Create downloads directory
+        import os
+        os.makedirs('downloads', exist_ok=True)
     
     def start(self):
         """Start the browser manager and its dedicated thread."""
@@ -83,7 +88,8 @@ class BrowserManager:
         self._playwright = sync_playwright().start()
         self._browser = self._playwright.chromium.launch(
             headless=True,
-            args=config.BROWSER_ARGS
+            args=config.BROWSER_ARGS,
+            downloads_path='downloads'
         )
         
         while self._running:
@@ -164,7 +170,8 @@ class BrowserManager:
         context = self._browser.new_context(
             viewport={'width': viewport_width, 'height': viewport_height},
             user_agent=config.USER_AGENT,
-            ignore_https_errors=True
+            ignore_https_errors=True,
+            accept_downloads=True
         )
         page = context.new_page()
         
@@ -178,6 +185,32 @@ class BrowserManager:
             viewport_width=viewport_width,
             viewport_height=viewport_height
         )
+        
+        # Handle Downloads
+        def handle_download(download):
+            try:
+                import os
+                # Create session specific directory
+                download_dir = os.path.join('downloads', session_id)
+                os.makedirs(download_dir, exist_ok=True)
+                
+                # Save file
+                filename = download.suggested_filename
+                path = os.path.join(download_dir, filename)
+                download.save_as(path)
+                
+                print(f"Download completed: {path}")
+                session.last_download = {
+                    'filename': filename,
+                    'path': path,
+                    'url': download.url,
+                    'time': time.time()
+                }
+            except Exception as e:
+                print(f"Download failed: {e}")
+
+        page.on("download", handle_download)
+        
         self._sessions[session_id] = session
         print(f"Created session: {session_id}")
         return session_id
@@ -470,7 +503,8 @@ class BrowserManager:
                     'viewport_width': s.viewport_width,
                     'viewport_height': s.viewport_height,
                     'quality': s.quality,
-                    'fps': s.fps
+                    'fps': s.fps,
+                    'last_download': s.last_download
                 }
             except Exception:
                 return None

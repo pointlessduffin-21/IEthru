@@ -83,6 +83,26 @@ This session_id must be passed to ALL links to maintain the same browser session
 </tr>
 {% endif %}
 
+{% if page_info.last_download %}
+<!-- DOWNLOAD NOTIFICATION -->
+<tr bgcolor="#FFFFCC">
+    <td align="center" style="border-bottom: 1px solid #999900;">
+        <table border="0" cellpadding="5" cellspacing="0" width="100%">
+            <tr>
+                <td align="center">
+                    <font face="Verdana, Arial" size="2" color="black">
+                        <b>File Download Ready:</b> 
+                        <a href="/downloads/{{ session_id }}/{{ page_info.last_download.filename }}" target="_blank">
+                            <b>{{ page_info.last_download.filename }}</b>
+                        </a>
+                    </font>
+                </td>
+            </tr>
+        </table>
+    </td>
+</tr>
+{% endif %}
+
 <!-- VIEWPORT -->
 <tr>
     <td bgcolor="#000000" align="center">
