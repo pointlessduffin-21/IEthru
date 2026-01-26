@@ -141,10 +141,12 @@ def browse():
     viewport_width = request.form.get('viewport_width', type=int) or config.DEFAULT_VIEWPORT_WIDTH
     viewport_height = request.form.get('viewport_height', type=int) or config.DEFAULT_VIEWPORT_HEIGHT
     fps = request.form.get('fps', type=int) or request.args.get('fps', type=int) or config.DEFAULT_FPS
+    duration_mins = request.form.get('duration', type=int) or request.args.get('duration', type=int)
     
     # Create new session if needed
     if not session_id or not browser_manager.get_session(session_id):
-        session_id = browser_manager.create_session(viewport_width, viewport_height)
+        timeout_seconds = duration_mins * 60 if duration_mins else config.SESSION_TIMEOUT_SECONDS
+        session_id = browser_manager.create_session(viewport_width, viewport_height, timeout_seconds)
     
     # Set FPS on session
     browser_manager.set_fps(session_id, fps)
@@ -532,8 +534,10 @@ def new_session():
     """Create a new browser session."""
     viewport_width = request.form.get('viewport_width', type=int, default=config.DEFAULT_VIEWPORT_WIDTH)
     viewport_height = request.form.get('viewport_height', type=int, default=config.DEFAULT_VIEWPORT_HEIGHT)
+    duration_mins = request.form.get('duration', type=int)
     
-    session_id = browser_manager.create_session(viewport_width, viewport_height)
+    timeout_seconds = duration_mins * 60 if duration_mins else config.SESSION_TIMEOUT_SECONDS
+    session_id = browser_manager.create_session(viewport_width, viewport_height, timeout_seconds)
     
     # Redirect to browser view
     return redirect(url_for('browse', session_id=session_id))

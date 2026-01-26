@@ -29,6 +29,7 @@ class BrowserSession:
     quality: int = config.DEFAULT_QUALITY
     fps: int = config.DEFAULT_FPS
     last_rtt_ms: float = 0.0
+    timeout_seconds: int = config.SESSION_TIMEOUT_SECONDS
     downloads: list[dict] = field(default_factory=list)
     downloading_count: int = 0
     
@@ -39,7 +40,7 @@ class BrowserSession:
     def is_expired(self) -> bool:
         """Check if session has expired."""
         elapsed = (datetime.now() - self.last_activity).total_seconds()
-        return elapsed > config.SESSION_TIMEOUT_SECONDS
+        return elapsed > self.timeout_seconds
 
 
 class BrowserManager:
@@ -149,7 +150,8 @@ class BrowserManager:
     def _create_session_unsafe(
         self,
         viewport_width: int = config.DEFAULT_VIEWPORT_WIDTH,
-        viewport_height: int = config.DEFAULT_VIEWPORT_HEIGHT
+        viewport_height: int = config.DEFAULT_VIEWPORT_HEIGHT,
+        timeout_seconds: int = config.SESSION_TIMEOUT_SECONDS
     ) -> str:
         """Create a new browser session (called on browser thread)."""
         if len(self._sessions) >= config.MAX_SESSIONS:
@@ -184,7 +186,8 @@ class BrowserManager:
             context=context,
             page=page,
             viewport_width=viewport_width,
-            viewport_height=viewport_height
+            viewport_height=viewport_height,
+            timeout_seconds=timeout_seconds
         )
         
         # Handle Downloads
@@ -280,11 +283,12 @@ class BrowserManager:
     def create_session(
         self,
         viewport_width: int = config.DEFAULT_VIEWPORT_WIDTH,
-        viewport_height: int = config.DEFAULT_VIEWPORT_HEIGHT
+        viewport_height: int = config.DEFAULT_VIEWPORT_HEIGHT,
+        timeout_seconds: int = config.SESSION_TIMEOUT_SECONDS
     ) -> str:
         """Create a new browser session with isolated context."""
         result = self._execute_on_browser_thread(
-            self._create_session_unsafe, viewport_width, viewport_height
+            self._create_session_unsafe, viewport_width, viewport_height, timeout_seconds
         )
         if result.get('error'):
             raise RuntimeError(result['error'])

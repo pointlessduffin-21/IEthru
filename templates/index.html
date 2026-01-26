@@ -1,21 +1,20 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-  <head>
-    <title>IEthru - Browse Modern Web on IE5/6</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-  </head>
-  <body bgcolor="#336699" text="#FFFFFF" link="#FFFF00" vlink="#FFCC00" alink="#FF6600">
-    
-    <!-- Suppress errors from Cloudflare-injected scripts -->
-    <script language="JavaScript">
-    <!--
-    window.onerror = function() { return true; };
-    //-->
-    </script>
-    
-    <center>
+
+<head>
+  <title>IEthru - Browse Modern Web on IE5/6</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+</head>
+
+<body bgcolor="#336699" text="#FFFFFF" link="#FFFF00" vlink="#FFCC00" alink="#FF6600">
+
+  <script language="JavaScript">
+    window.onerror = function () { return true; };
+  </script>
+
+  <center>
     <br>
-    
+
     <!-- Header -->
     <table border="0" cellpadding="0" cellspacing="0" width="700">
       <tr>
@@ -25,23 +24,25 @@
               <td align="center">
                 <font size="6" color="#FFFFFF"><b>IEthru</b></font>
                 <br>
-                <font size="2" color="#99CCFF">Browse the modern web on Internet Explorer 5/6</font>
+                <font size="2" color="#99CCFF">Browse the modern web on old browsers.</font>
               </td>
             </tr>
           </table>
         </td>
       </tr>
     </table>
-    
+
     <br>
-    
+
     <!-- Quick Sites -->
     <table border="0" cellpadding="0" cellspacing="0" width="700" bgcolor="#FFFFFF">
       <tr>
         <td>
           <table border="0" cellpadding="15" cellspacing="0" width="100%">
             <tr bgcolor="#E0E0E0">
-              <td><font color="#003366" size="3"><b>Quick Sites</b></font></td>
+              <td>
+                <font color="#003366" size="3"><b>Quick Sites</b></font>
+              </td>
             </tr>
             <tr>
               <td align="center" bgcolor="#F5F5F5">
@@ -58,7 +59,7 @@
                         <input type="submit" value="Visit" style="width:80px">
                       </form>
                     </td>
-                    
+
                     <!-- Wikipedia -->
                     <td align="center" bgcolor="#FFFFFF" width="150">
                       <form action="/browse" method="POST">
@@ -70,7 +71,7 @@
                         <input type="submit" value="Visit" style="width:80px">
                       </form>
                     </td>
-                    
+
                     <!-- Apple -->
                     <td align="center" bgcolor="#000000" width="150">
                       <form action="/browse" method="POST">
@@ -82,14 +83,19 @@
                         <input type="submit" value="Visit" style="width:80px">
                       </form>
                     </td>
-                    
+
                     <!-- Google -->
                     <td align="center" bgcolor="#FFFFFF" width="150">
                       <form action="/browse" method="POST">
                         <input type="hidden" name="url" value="https://www.google.com">
                         <input type="hidden" name="viewport_width" value="800">
                         <input type="hidden" name="viewport_height" value="600">
-                        <font color="#4285F4" size="2"><b>G</b></font><font color="#EA4335" size="2"><b>o</b></font><font color="#FBBC05" size="2"><b>o</b></font><font color="#4285F4" size="2"><b>g</b></font><font color="#34A853" size="2"><b>l</b></font><font color="#EA4335" size="2"><b>e</b></font><br>
+                        <font color="#4285F4" size="2"><b>G</b></font>
+                        <font color="#EA4335" size="2"><b>o</b></font>
+                        <font color="#FBBC05" size="2"><b>o</b></font>
+                        <font color="#4285F4" size="2"><b>g</b></font>
+                        <font color="#34A853" size="2"><b>l</b></font>
+                        <font color="#EA4335" size="2"><b>e</b></font><br>
                         <font color="#666666" size="1">Search</font><br><br>
                         <input type="submit" value="Visit" style="width:80px">
                       </form>
@@ -102,62 +108,85 @@
         </td>
       </tr>
     </table>
-    
+
     <br>
-    
+
     <!-- Custom URL -->
     <table border="0" cellpadding="0" cellspacing="0" width="700" bgcolor="#FFFFFF">
       <tr>
         <td>
           <table border="0" cellpadding="15" cellspacing="0" width="100%">
             <tr bgcolor="#E0E0E0">
-              <td><font color="#003366" size="3"><b>Enter Custom URL</b></font></td>
+              <td>
+                <font color="#003366" size="3"><b>Enter Custom URL</b></font>
+              </td>
             </tr>
             <tr>
               <td bgcolor="#F5F5F5">
                 <script language="JavaScript">
-                <!--
-                function updateResolution(select) {
-                    var custom = document.getElementById('custom_inputs');
-                    if (select.value == "") {
-                        if (custom.style.display == 'none') {
-                             custom.style.display = 'block';
-                        }
-                    } else {
-                        custom.style.display = 'none';
-                        var parts = select.value.split(',');
-                        document.forms['custom_form'].viewport_width.value = parts[0];
-                        document.forms['custom_form'].viewport_height.value = parts[1];
+                  function updateResolution(select) {
+                    if (select.value != "") {
+                      var parts = select.value.split(',');
+                      document.forms['custom_form'].viewport_width.value = parts[0];
+                      document.forms['custom_form'].viewport_height.value = parts[1];
                     }
-                }
-                
-                function autoDetect() {
+                  }
+
+                  function updateDuration(select) {
+                    if (select.value != "") {
+                      document.forms['custom_form'].duration.value = select.value;
+                    }
+                  }
+
+                  function autoDetect() {
                     var w = 800;
                     var h = 600;
                     if (window.screen) {
-                        w = window.screen.width;
-                        h = window.screen.height;
+                      w = window.screen.width;
+                      h = window.screen.height;
                     }
                     document.forms['custom_form'].viewport_width.value = w;
                     document.forms['custom_form'].viewport_height.value = h;
-                    document.forms['custom_form'].resolution_preset.selectedIndex = 0; // Set to Custom
-                    document.getElementById('custom_inputs').style.display = 'block';
-                }
-                //-->
+                  }
                 </script>
                 <form action="/browse" method="POST" name="custom_form">
                   <table border="0" cellpadding="5">
                     <tr>
-                      <td><font color="#333333"><b>URL:</b></font></td>
+                      <td>
+                        <font color="#333333"><b>URL:</b></font>
+                      </td>
                       <td><input type="text" name="url" value="https://" size="50"></td>
                     </tr>
                     <tr>
-                      <td><font color="#333333"><b>Size:</b></font></td>
+                      <td valign="top">
+                        <font color="#333333"><b>Duration:</b></font>
+                      </td>
                       <td>
+                        <input type="text" name="duration" value="30" size="4"> Minutes
+                        <br>
+                        <select name="duration_preset" onchange="updateDuration(this)">
+                          <option value="">-- Select Preset --</option>
+                          <option value="15">15 Minutes</option>
+                          <option value="30">30 Minutes</option>
+                          <option value="60">1 Hour</option>
+                          <option value="180">3 Hours</option>
+                          <option value="360">6 Hours</option>
+                        </select>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td valign="top">
+                        <font color="#333333"><b>Size:</b></font>
+                      </td>
+                      <td>
+                        <input type="text" name="viewport_width" value="800" size="4"> x
+                        <input type="text" name="viewport_height" value="600" size="4">
+                        <input type="button" value="Detect" onclick="autoDetect()">
+                        <br>
                         <select name="resolution_preset" onchange="updateResolution(this)">
-                          <option value="">Custom</option>
+                          <option value="">-- Select Preset --</option>
                           <option value="640,480">640x480 (4:3)</option>
-                          <option value="800,600" selected>800x600 (4:3)</option>
+                          <option value="800,600">800x600 (4:3)</option>
                           <option value="1024,768">1024x768 (4:3)</option>
                           <option value="1280,720">1280x720 (16:9)</option>
                           <option value="1280,800">1280x800 (16:10)</option>
@@ -168,13 +197,8 @@
                           <option value="2560,1600">2560x1600 (16:10)</option>
                         </select>
                         <br>
-                        <div id="custom_inputs" style="display:none; margin-top:5px;">
-                            <input type="text" name="viewport_width" value="800" size="4"> x 
-                            <input type="text" name="viewport_height" value="600" size="4">
-                            <input type="button" value="Auto-Detect" onclick="autoDetect()">
-                        </div>
                         &nbsp;
-                        <input type="submit" value="Go!">
+                        <input type="submit" value="Go!" style="margin-top: 5px;">
                       </td>
                     </tr>
                   </table>
@@ -185,9 +209,9 @@
         </td>
       </tr>
     </table>
-    
+
     <br>
-    
+
     <!-- Tips -->
     <table border="0" cellpadding="0" cellspacing="0" width="700" bgcolor="#FFFFCC">
       <tr>
@@ -196,7 +220,7 @@
             <tr>
               <td>
                 <font color="#666600" size="2">
-                  <b>Tips:</b> Click the image to interact with links/buttons. 
+                  <b>Tips:</b> Click the image to interact with links/buttons.
                   Use [Up] [Down] to scroll. Type in the box and click Send for keyboard input.
                 </font>
               </td>
@@ -205,18 +229,19 @@
         </td>
       </tr>
     </table>
-    
+
     <br>
-    
+
     <!-- Footer -->
     <font size="1" color="#99CCFF">
       IEthru v1.0 | Designed for IE5/6 compatibility<br>
       Powered by Playwright + Flask
     </font>
-    
+
     <br><br>
-    
-    </center>
-    
-  </body>
+
+  </center>
+
+</body>
+
 </html>
